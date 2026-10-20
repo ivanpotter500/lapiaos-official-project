@@ -1,0 +1,25 @@
+section .multiboot_header
+align 4
+    dd 0x1BADB002 ; number of multiboot
+    dd 0x00000000 ; architecture of i386
+    dd -(0x1BADB002 + 0x00000000) ; kontrolna suma
+
+section .text
+bits 32
+global start
+extern kernel_main
+
+start:
+    mov esp, stack_top
+    call kernel_main
+    cli
+.hang:
+    hlt
+    jmp .hang
+
+section .bss
+align 16
+stack_bottom:
+    resb 16384
+stack_top:
+
